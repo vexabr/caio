@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pré-atendimento · Clínica Ésper</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --verde:#2D4A3E;--verde-mid:#3D6055;--verde-light:#4E7A68;
+  --bege:#C9B49A;--bege-light:#E8DDD0;--bege-xlight:#F5F0EB;--bege-xxlight:#FAF8F5;
+  --text-dark:#1C2B25;--text-mid:#3D4F47;--text-muted:#7A8C84;--border:#DDD5C8;
+}
+body{font-family:'Raleway',sans-serif;background:var(--bege-xxlight);color:var(--text-dark);font-weight:300;min-height:100vh}
+.app{max-width:780px;margin:0 auto;padding:0 0 6rem}
+
+.header{background:var(--verde);padding:2.5rem 2.5rem 3.5rem;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--bege-xxlight);clip-path:ellipse(55% 100% at 50% 100%)}
+.logo-wrap{margin-bottom:1.5rem}
+.header-tag{font-size:0.67rem;letter-spacing:0.28em;color:var(--bege);text-transform:uppercase;font-weight:500;margin-bottom:0.5rem}
+.header h1{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;color:#fff;line-height:1.35}
+.header h1 em{font-style:italic;color:var(--bege-light)}
+.header p{font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:0.65rem;letter-spacing:0.04em;line-height:1.65}
+
+.body{padding:2.5rem 2.5rem 0}
+
+.progress-wrap{margin-bottom:2.5rem}
+.progress-track{height:2px;background:var(--bege-light)}
+.progress-fill{height:100%;background:var(--verde);transition:width 0.5s ease}
+.progress-info{display:flex;justify-content:space-between;margin-top:0.45rem}
+.progress-info span{font-size:0.69rem;color:var(--text-muted);letter-spacing:0.07em;font-weight:400}
+
+.section{margin-bottom:2.25rem}
+.section-label{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.4rem}
+.section-num{width:26px;height:26px;border:1px solid var(--bege);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.82rem;color:var(--bege);flex-shrink:0}
+.section-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:400;color:var(--verde);border-bottom:1px solid var(--bege-light);padding-bottom:0.35rem;flex:1}
+
+.field{margin-bottom:1.3rem}
+.field label{display:block;font-size:0.7rem;letter-spacing:0.13em;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.5rem;font-weight:500}
+.field textarea,.field input{width:100%;background:white;border:1px solid var(--border);padding:0.75rem 1rem;font-family:'Raleway',sans-serif;font-size:0.87rem;color:var(--text-dark);font-weight:300;transition:border-color 0.2s;resize:vertical;outline:none}
+.field textarea:focus,.field input:focus{border-color:var(--verde)}
+.field textarea{min-height:90px}
+
+.insta-wrap{position:relative}
+.insta-wrap input{padding-left:2.2rem}
+.insta-icon{position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);font-size:0.85rem;color:var(--text-muted);pointer-events:none}
+.insta-hint{font-size:0.68rem;color:var(--text-muted);margin-top:0.4rem;line-height:1.5;font-style:italic}
+
+.pills{display:flex;flex-wrap:wrap;gap:0.4rem}
+.pill{padding:0.38rem 0.85rem;border:1px solid var(--border);font-size:0.75rem;letter-spacing:0.03em;cursor:pointer;transition:all 0.2s;background:white;color:var(--text-mid);font-family:'Raleway',sans-serif;font-weight:400;user-select:none}
+.pill:hover{border-color:var(--verde);color:var(--verde)}
+.pill.active{border-color:var(--verde);background:var(--verde);color:white}
+
+.scale{display:flex;gap:3px;flex-wrap:wrap}
+.scale-num{width:33px;height:33px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.8rem;cursor:pointer;transition:all 0.2s;background:white;color:var(--text-mid);font-family:'Raleway',sans-serif;font-weight:400;user-select:none}
+.scale-num:hover{border-color:var(--verde-light);color:var(--verde)}
+.scale-num.active{border-color:var(--verde);background:var(--verde);color:white}
+.scale-labels{display:flex;justify-content:space-between;margin-top:0.35rem;font-size:0.67rem;color:var(--text-muted);letter-spacing:0.05em}
+
+.divider{height:1px;background:var(--bege-light);margin:2rem 0}
+
+.insta-notice{background:white;border:1px solid var(--bege-light);border-left:3px solid var(--bege);padding:1.25rem;margin-bottom:1.3rem}
+.insta-notice p{font-size:0.82rem;color:var(--text-mid);line-height:1.75;font-weight:300}
+
+.btn-main{width:100%;padding:1.1rem;background:var(--verde);color:white;border:none;font-family:'Raleway',sans-serif;font-size:0.78rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;transition:background 0.3s;font-weight:500}
+.btn-main:hover{background:var(--verde-mid)}
+.btn-main:disabled{opacity:0.45;cursor:not-allowed}
+
+/* REPORT */
+.loading-state{text-align:center;padding:5rem 2rem;background:white;margin:2rem}
+.loading-spinner{width:36px;height:36px;border:1px solid var(--bege-light);border-top-color:var(--verde);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.25rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--verde)}
+.loading-sub{font-size:0.73rem;color:var(--text-muted);margin-top:0.35rem;letter-spacing:0.07em}
+
+.report-header{background:var(--verde);padding:2.5rem;text-align:center;position:relative}
+.report-header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:32px;background:var(--bege-xxlight);clip-path:ellipse(55% 100% at 50% 100%)}
+.report-header h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;color:white;margin-bottom:0.2rem}
+.report-header p{font-size:0.68rem;letter-spacing:0.18em;color:var(--bege-light);text-transform:uppercase}
+
+.report-body{padding:2.5rem}
+
+.insta-tag{display:inline-flex;align-items:center;gap:0.5rem;background:var(--bege-xlight);border:1px solid var(--bege-light);padding:0.3rem 0.85rem;font-size:0.75rem;color:var(--verde);font-weight:500;margin-bottom:1.5rem}
+
+.report-card{background:white;border:1px solid var(--border);padding:1.4rem;margin-bottom:0.65rem;border-left:3px solid var(--bege)}
+.report-card.highlight{border-left-color:var(--verde)}
+.report-card-title{font-size:0.66rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--verde);margin-bottom:0.55rem;font-weight:600}
+.report-card-content{font-size:0.88rem;color:var(--text-dark);line-height:1.85;font-weight:300}
+.report-card-sub{font-size:0.74rem;font-weight:500;color:var(--verde);display:block;margin:0.75rem 0 0.25rem}
+
+.badge{display:inline-block;padding:0.18rem 0.6rem;font-size:0.67rem;letter-spacing:0.07em;font-weight:500;text-transform:uppercase;margin-right:0.4rem}
+.badge-low{background:#EAF3DE;color:#27500A}
+.badge-mid{background:#FAEEDA;color:#633806}
+.badge-high{background:#FCEBEB;color:#791F1F}
+
+.prob-bar-wrap{margin-top:0.6rem;height:3px;background:var(--bege-light)}
+.prob-bar-fill{height:100%;transition:width 1.2s ease}
+
+.report-footer{text-align:center;padding:1.5rem 0 0;border-top:1px solid var(--bege-light);margin-top:0.5rem}
+.report-footer p{font-size:0.68rem;color:var(--text-muted);letter-spacing:0.05em;line-height:1.7}
+
+@media(max-width:600px){
+  .header{padding:2rem 1.5rem 3rem}
+  .body{padding:2rem 1.5rem 0}
+  .report-body{padding:1.5rem}
+  .scale-num{width:28px;height:28px;font-size:0.75rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- FORMULÁRIO -->
+  <div id="form-section">
+    <div class="header">
+      <div class="logo-wrap">
+        <svg width="220" height="58" viewBox="0 0 220 58" xmlns="http://www.w3.org/2000/svg">
+          <text x="110" y="34" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="28" font-weight="400" fill="#C9B49A" letter-spacing="3">Clínica Ésper</text>
+          <line x1="30" y1="44" x2="190" y2="44" stroke="#C9B49A" stroke-width="0.5" opacity="0.45"/>
+          <text x="110" y="54" text-anchor="middle" font-family="Raleway, sans-serif" font-size="8" font-weight="400" fill="#C9B49A" letter-spacing="6" opacity="0.65">CIRURGIA PLÁSTICA</text>
+        </svg>
+      </div>
+      <div class="header-tag">Pré-atendimento exclusivo</div>
+      <h1>Uma experiência <em>personalizada</em><br>começa aqui</h1>
+      <p>Suas respostas nos ajudam a preparar uma consulta única,<br>acolhedora e especialmente pensada para você</p>
+    </div>
+
+    <div class="body">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div class="progress-info">
+          <span id="progress-label">Preencha o formulário abaixo</span>
+          <span id="progress-pct">0%</span>
+        </div>
+      </div>
+
+      <!-- I -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">I</div>
+          <div class="section-title">Sobre você e sua jornada</div>
+        </div>
+        <div class="field">
+          <label>Como você se sente hoje, de forma geral?</label>
+          <textarea id="q1" placeholder="Compartilhe como está se sentindo neste momento da sua vida..." oninput="updateProgress()"></textarea>
+        </div>
+        <div class="field">
+          <label>O que te motivou a buscar esta consulta?</label>
+          <textarea id="q2" placeholder="Conte-nos o que te trouxe até aqui..." oninput="updateProgress()"></textarea>
+        </div>
+        <div class="field">
+          <label>Há quanto tempo você pensa sobre essa possibilidade?</label>
+          <div class="pills" id="tempo-pills">
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Menos de 1 mês</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">1 a 6 meses</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">6 meses a 1 ano</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Mais de 1 ano</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Há muitos anos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- II -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">II</div>
+          <div class="section-title">O que você deseja</div>
+        </div>
+        <div class="field">
+          <label>Descreva o resultado que você sonha alcançar</label>
+          <textarea id="q3" placeholder="Seja o mais detalhada(o) que quiser sobre o que imagina para si..." oninput="updateProgress()"></textarea>
+        </div>
+        <div class="field">
+          <label>O que essa mudança significaria para a sua vida?</label>
+          <textarea id="q4" placeholder="Pense no impacto emocional, social, profissional..." oninput="updateProgress()"></textarea>
+        </div>
+        <div class="field">
+          <label>Como você se imagina após atingir esse resultado?</label>
+          <textarea id="q5" placeholder="Como estará se sentindo? O que mudará no seu dia a dia?" oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- III -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">III</div>
+          <div class="section-title">Seus sentimentos e preocupações</div>
+        </div>
+        <div class="field">
+          <label>Nível de ansiedade sobre esta decisão &nbsp;·&nbsp; 1 = tranquilo · 10 = muito ansioso</label>
+          <div class="scale" id="ansiedade-scale">
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">1</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">2</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">3</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">4</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">5</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">6</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">7</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">8</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">9</div>
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">10</div>
+          </div>
+          <div class="scale-labels"><span>Muito tranquilo(a)</span><span>Muito ansioso(a)</span></div>
+        </div>
+        <div class="field">
+          <label>O que mais te preocupa ou gera dúvida nesse processo?</label>
+          <textarea id="q6" placeholder="Pode ser sobre o procedimento, recuperação, resultados..." oninput="updateProgress()"></textarea>
+        </div>
+        <div class="field">
+          <label>Há algo que gostaria de entender melhor antes da consulta?</label>
+          <textarea id="q7" placeholder="Suas dúvidas são muito importantes para nós..." oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- IV -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">IV</div>
+          <div class="section-title">Sua decisão e expectativas</div>
+        </div>
+        <div class="field">
+          <label>Como você se sente em relação à sua decisão hoje?</label>
+          <div class="pills" id="decisao-pills">
+            <div class="pill" onclick="selectPill(this,'decisao-pills')">Bastante decidida(o)</div>
+            <div class="pill" onclick="selectPill(this,'decisao-pills')">Inclinada(o), ainda avaliando</div>
+            <div class="pill" onclick="selectPill(this,'decisao-pills')">Em dúvida, pesquisando</div>
+            <div class="pill" onclick="selectPill(this,'decisao-pills')">Apenas explorando</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Você já pesquisou outros profissionais ou clínicas?</label>
+          <div class="pills" id="pesquisa-pills">
+            <div class="pill" onclick="selectPill(this,'pesquisa-pills')">Não, é minha primeira pesquisa</div>
+            <div class="pill" onclick="selectPill(this,'pesquisa-pills')">Pesquisei um pouco online</div>
+            <div class="pill" onclick="selectPill(this,'pesquisa-pills')">Consultei outras clínicas</div>
+            <div class="pill" onclick="selectPill(this,'pesquisa-pills')">Estou comparando opções</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>O que faria você sentir que tomou a decisão certa?</label>
+          <textarea id="q8" placeholder="Conte o que é mais importante para você nessa escolha..." oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- V -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">V</div>
+          <div class="section-title">Contexto e motivações</div>
+        </div>
+        <div class="field">
+          <label>Há alguém próximo que sabe sobre essa decisão?</label>
+          <div class="pills" id="apoio-pills">
+            <div class="pill" onclick="selectPill(this,'apoio-pills')">Sim, tenho total apoio</div>
+            <div class="pill" onclick="selectPill(this,'apoio-pills')">Sim, mas há reservas</div>
+            <div class="pill" onclick="selectPill(this,'apoio-pills')">Poucas pessoas sabem</div>
+            <div class="pill" onclick="selectPill(this,'apoio-pills')">Prefiro manter privado</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Sua maior motivação é</label>
+          <div class="pills" id="motivacao-pills">
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Autoestima pessoal</div>
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Saúde e bem-estar</div>
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Reconhecimento social</div>
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Relacionamentos</div>
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Vida profissional</div>
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Nova fase da vida</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Há algo mais que gostaria que soubéssemos?</label>
+          <textarea id="q9" placeholder="Este espaço é livre para compartilhar o que sentir vontade..." oninput="updateProgress()"></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- VI -->
+      <div class="section">
+        <div class="section-label">
+          <div class="section-num">VI</div>
+          <div class="section-title" style="color:var(--bege);border-color:var(--bege-light)">
+            Referências estéticas <em style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem">(opcional)</em>
+          </div>
+        </div>
+        <div class="insta-notice">
+          <p>Para tornar sua consulta ainda mais personalizada, você pode compartilhar seu Instagram conosco. Assim, nossa equipe conhece melhor seu estilo, referências e gostos antes de você chegar — criando uma experiência verdadeiramente única.</p>
+        </div>
+        <div class="field">
+          <label>Seu @ do Instagram <span style="font-weight:300;text-transform:none;letter-spacing:0">(totalmente opcional)</span></label>
+          <div class="insta-wrap">
+            <span class="insta-icon">@</span>
+            <input type="text" id="instagram" placeholder="seu.perfil" oninput="updateProgress()">
+          </div>
+          <div class="insta-hint">Analisamos apenas perfis públicos · Uso exclusivo para personalizar sua consulta · Nunca compartilhado</div>
+        </div>
+        <div class="field">
+          <label>Há alguma referência estética que você admira?</label>
+          <textarea id="q10" placeholder="Ex: gosto de resultados naturais, admiro o estilo de fulana, prefiro algo mais discreto..." oninput="updateProgress()" style="min-height:70px"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-main" id="generate-btn" onclick="generateReport()">
+        Gerar Relatório de Experiência
+      </button>
+    </div>
+  </div>
+
+  <!-- RELATÓRIO -->
+  <div id="report-section" style="display:none">
+    <div id="loading-state" class="loading-state">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loading-text">Analisando perfil do paciente</div>
+      <div class="loading-sub" id="loading-sub">Preparando relatório personalizado...</div>
+    </div>
+    <div id="report-content" style="display:none">
+      <div class="report-header">
+        <svg width="200" height="54" viewBox="0 0 200 54" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:1.25rem">
+          <text x="100" y="32" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="26" font-weight="400" fill="#C9B49A" letter-spacing="2">Clínica Ésper</text>
+          <line x1="25" y1="42" x2="175" y2="42" stroke="#C9B49A" stroke-width="0.5" opacity="0.4"/>
+          <text x="100" y="51" text-anchor="middle" font-family="Raleway, sans-serif" font-size="7" font-weight="400" fill="#C9B49A" letter-spacing="5" opacity="0.6">CIRURGIA PLÁSTICA</text>
+        </svg>
+        <h2>Relatório de Experiência</h2>
+        <p>Personalizada · Confidencial · <span id="report-date"></span></p>
+      </div>
+      <div class="report-body">
+        <div id="insta-section"></div>
+        <div id="report-cards"></div>
+        <div class="report-footer">
+          <p>Documento de uso interno exclusivo · Clínica Ésper<br>Não substitui avaliação médica profissional</p>
+        </div>
+        <button class="btn-main" onclick="location.reload()" style="margin-top:2rem">
+          Novo Pré-atendimento
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+const pillSelections={};
+const scaleSelections={};
+
+function selectPill(el,g){
+  document.querySelectorAll('#'+g+' .pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  pillSelections[g]=el.textContent;
+  updateProgress();
+}
+function selectScale(el,g){
+  document.querySelectorAll('#'+g+' .scale-num').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  scaleSelections[g]=el.textContent;
+  updateProgress();
+}
+function updateProgress(){
+  const fields=['q1','q2','q3','q4','q5','q6','q7','q8','q9'];
+  const pills=['tempo-pills','decisao-pills','pesquisa-pills','apoio-pills','motivacao-pills'];
+  const scales=['ansiedade-scale'];
+  let filled=0,total=fields.length+pills.length+scales.length;
+  fields.forEach(id=>{if(document.getElementById(id)?.value?.trim())filled++;});
+  pills.forEach(id=>{if(pillSelections[id])filled++;});
+  scales.forEach(id=>{if(scaleSelections[id])filled++;});
+  const pct=Math.round((filled/total)*100);
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=filled+' de '+total+' campos preenchidos';
+}
+function get(id){return document.getElementById(id)?.value?.trim()||'(não respondido)';}
+function collectAnswers(){
+  return [
+    'Como se sente hoje: '+get('q1'),
+    'Motivação para buscar consulta: '+get('q2'),
+    'Tempo pensando: '+(pillSelections['tempo-pills']||'(não informado)'),
+    'Resultado desejado: '+get('q3'),
+    'Significado da mudança: '+get('q4'),
+    'Como se imagina após resultado: '+get('q5'),
+    'Nível de ansiedade (1-10): '+(scaleSelections['ansiedade-scale']||'(não informado)'),
+    'Preocupações e dúvidas: '+get('q6'),
+    'Gostaria de entender melhor: '+get('q7'),
+    'Nível de decisão: '+(pillSelections['decisao-pills']||'(não informado)'),
+    'Pesquisa prévia: '+(pillSelections['pesquisa-pills']||'(não informado)'),
+    'O que faria sentir que tomou decisão certa: '+get('q8'),
+    'Apoio de pessoas próximas: '+(pillSelections['apoio-pills']||'(não informado)'),
+    'Motivação principal: '+(pillSelections['motivacao-pills']||'(não informado)'),
+    'Informações adicionais: '+get('q9'),
+    'Referências estéticas declaradas: '+get('q10')
+  ].join('\n');
+}
+function getLevelBadge(text){
+  const t=text.toLowerCase();
+  if(t.startsWith('alto')||t.startsWith('alta'))return '<span class="badge badge-high">Alto</span>';
+  if(t.startsWith('moderado')||t.startsWith('moderada'))return '<span class="badge badge-mid">Moderado</span>';
+  if(t.startsWith('baixo')||t.startsWith('baixa'))return '<span class="badge badge-low">Baixo</span>';
+  return '';
+}
+function getProbBar(text){
+  const t=text.toLowerCase();
+  let w='50%',c='var(--bege)';
+  if(t.startsWith('alta')||t.startsWith('alto')){w='82%';c='var(--verde)';}
+  else if(t.startsWith('baixa')||t.startsWith('baixo')){w='22%';c='#A32D2D';}
+  return '<div class="prob-bar-wrap"><div class="prob-bar-fill" style="width:'+w+';background:'+c+'"></div></div>';
+}
+async function fetchInstagramAnalysis(handle){
+  const system=`Você é um analista de comportamento e estética para clínicas de cirurgia plástica premium. Analise o perfil público do Instagram indicado de forma elegante e discreta. Responda APENAS com JSON válido sem markdown:
+{"estilo_estetico":"texto","referencias_visuais":"texto","nivel_exposicao":"texto","perfil_lifestyle":"texto","cruzamento_expectativas":"texto","insights_para_consulta":"texto"}`;
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:800,
+      tools:[{'type':'web_search_20250305','name':'web_search'}],
+      system:system,
+      messages:[{role:'user',content:'Pesquise e analise o perfil público do Instagram @'+handle+' para uma clínica de cirurgia plástica premium. Identifique estilo visual, referências estéticas, lifestyle e tipo de conteúdo.'}]
+    })
+  });
+  const d=await r.json();
+  const txt=d.content?.filter(i=>i.type==='text').map(i=>i.text).join('')||'';
+  try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch{return null;}
+}
+async function generateReport(){
+  const btn=document.getElementById('generate-btn');
+  btn.disabled=true;
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('report-section').style.display='block';
+  document.getElementById('loading-state').style.display='block';
+  document.getElementById('report-content').style.display='none';
+  const answers=collectAnswers();
+  const instagram=document.getElementById('instagram').value.trim().replace('@','');
+  const now=new Date();
+  document.getElementById('report-date').textContent=now.toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}).toUpperCase();
+  let instaData=null;
+  if(instagram){
+    document.getElementById('loading-text').textContent='Analisando referências estéticas';
+    document.getElementById('loading-sub').textContent='Buscando perfil @'+instagram+' ...';
+    try{instaData=await fetchInstagramAnalysis(instagram);}catch(e){instaData=null;}
+  }
+  document.getElementById('loading-text').textContent='Elaborando relatório personalizado';
+  document.getElementById('loading-sub').textContent='Analisando perfil emocional e comportamental...';
+  const instaCtx=instaData
+    ?'\n\nANÁLISE DO INSTAGRAM (@'+instagram+'):\nEstilo estético: '+instaData.estilo_estetico+'\nReferências visuais: '+instaData.referencias_visuais+'\nNível de exposição: '+instaData.nivel_exposicao+'\nLifestyle: '+instaData.perfil_lifestyle+'\nCoerência com expectativas: '+instaData.cruzamento_expectativas
+    :'\n\n(Instagram não fornecido)';
+  const sys=`Você é um especialista em experiência premium para pacientes de cirurgia plástica, comportamento humano e acolhimento emocional. Analise as respostas e dados do Instagram (quando disponíveis) gerando um relatório sofisticado, humano e estratégico para a equipe da Clínica Ésper. Nunca indique procedimentos. Nunca faça promessas. Postura ética e empática. Responda APENAS com JSON válido sem markdown:
+{"perfil_emocional":"texto","motivacao_principal":"texto","expectativa_estetica":"texto","nivel_ansiedade":"inicie com Baixo, Moderado ou Alto + explicação","principais_preocupacoes":"texto","risco_frustracao":"inicie com Baixo, Moderado ou Alto + explicação","perfil_decisao":"texto","melhor_abordagem":"texto","linguagem_ideal":"texto","pontos_para_cirurgiao":"texto","estrategias_encantamento":"texto","probabilidade_fechamento":"inicie com Baixa, Moderada ou Alta + justificativa"}`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:sys,messages:[{role:'user',content:'Respostas do formulário:\n'+answers+instaCtx}]})
+    });
+    const d=await r.json();
+    const txt=d.content?.map(i=>i.text||'').join('')||'';
+    let report;
+    try{report=JSON.parse(txt.replace(/```json|```/g,'').trim());}
+    catch(e){throw new Error('Erro ao processar resposta da IA');}
+    if(instaData&&instagram){
+      document.getElementById('insta-section').innerHTML=
+        '<div class="insta-tag">&#64;'+instagram+' &middot; Perfil analisado</div>'+
+        '<div class="report-card" style="margin-bottom:1.5rem">'+
+        '<div class="report-card-title">Análise do Instagram</div>'+
+        '<div class="report-card-content">'+
+        '<span class="report-card-sub">Estilo estético</span>'+(instaData.estilo_estetico||'')+
+        '<span class="report-card-sub">Referências visuais</span>'+(instaData.referencias_visuais||'')+
+        '<span class="report-card-sub">Lifestyle identificado</span>'+(instaData.perfil_lifestyle||'')+
+        '<span class="report-card-sub">Coerência com expectativas</span>'+(instaData.cruzamento_expectativas||'')+
+        '<span class="report-card-sub">Insights para a consulta</span>'+(instaData.insights_para_consulta||'')+
+        '</div></div>';
+    }
+    const fields=[
+      ['perfil_emocional','Perfil emocional','highlight'],
+      ['motivacao_principal','Motivação principal',''],
+      ['expectativa_estetica','Expectativa estética',''],
+      ['nivel_ansiedade','Nível de ansiedade',''],
+      ['principais_preocupacoes','Principais preocupações',''],
+      ['risco_frustracao','Risco de frustração',''],
+      ['perfil_decisao','Perfil de decisão',''],
+      ['melhor_abordagem','Melhor abordagem para a consulta','highlight'],
+      ['linguagem_ideal','Linguagem ideal para o atendimento',''],
+      ['pontos_para_cirurgiao','Pontos importantes para o cirurgião','highlight'],
+      ['estrategias_encantamento','Estratégias de encantamento',''],
+      ['probabilidade_fechamento','Probabilidade emocional de fechamento','highlight']
+    ];
+    let cards='';
+    fields.forEach(function(f){
+      var key=f[0],label=f[1],cls=f[2],val=report[key]||'',extra='';
+      if(key==='nivel_ansiedade'||key==='risco_frustracao')extra=getLevelBadge(val)+' ';
+      if(key==='probabilidade_fechamento')extra=getProbBar(val);
+      cards+='<div class="report-card '+cls+'"><div class="report-card-title">'+label+'</div><div class="report-card-content">'+extra+val+'</div></div>';
+    });
+    document.getElementById('report-cards').innerHTML=cards;
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('report-content').style.display='block';
+  }catch(err){
+    document.getElementById('loading-state').innerHTML=
+      '<div style="text-align:center;padding:2rem">'+
+      '<div style="font-family:\'Playfair Display\',serif;font-size:1.1rem;color:var(--verde);margin-bottom:0.75rem">Não foi possível gerar o relatório</div>'+
+      '<div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem">'+err.message+'</div>'+
+      '<button onclick="location.reload()" style="background:var(--verde);color:white;border:none;padding:0.7rem 2rem;font-family:Raleway,sans-serif;font-size:0.77rem;letter-spacing:0.12em;cursor:pointer">Tentar novamente</button>'+
+      '</div>';
+  }
+}
+</script>
+</body>
+</html>
