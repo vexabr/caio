@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pré-atendimento · Clínica Ésper</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#2D4A3E;--verde-mid:#3D6055;--bege:#C9B49A;--bege-light:#E8DDD0;--bege-xlight:#F5F0EB;--bege-xxlight:#FAF8F5;--text-dark:#1C2B25;--text-mid:#3D4F47;--text-muted:#7A8C84;--border:#DDD5C8;}
+body{font-family:'Raleway',sans-serif;background:var(--bege-xxlight);color:var(--text-dark);font-weight:300;min-height:100vh}
+.app{max-width:780px;margin:0 auto;padding:0 0 6rem}
+.header{background:var(--verde);padding:2.5rem 2.5rem 3.5rem;text-align:center;position:relative}
+.header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--bege-xxlight);clip-path:ellipse(55% 100% at 50% 100%)}
+.header-tag{font-size:0.67rem;letter-spacing:0.28em;color:var(--bege);text-transform:uppercase;font-weight:500;margin-bottom:0.5rem;margin-top:1.25rem}
+.header h1{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;color:#fff;line-height:1.35}
+.header h1 em{font-style:italic;color:var(--bege-light)}
+.header p{font-size:0.78rem;color:rgba(255,255,255,0.55);margin-top:0.65rem;letter-spacing:0.04em;line-height:1.65}
+.body{padding:2.5rem 2.5rem 0}
+.progress-wrap{margin-bottom:2.5rem}
+.progress-track{height:2px;background:var(--bege-light)}
+.progress-fill{height:100%;background:var(--verde);transition:width 0.5s ease}
+.progress-info{display:flex;justify-content:space-between;margin-top:0.45rem}
+.progress-info span{font-size:0.69rem;color:var(--text-muted);letter-spacing:0.07em}
+.section{margin-bottom:2.25rem}
+.section-label{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.4rem}
+.section-num{width:26px;height:26px;border:1px solid var(--bege);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.82rem;color:var(--bege);flex-shrink:0}
+.section-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:400;color:var(--verde);border-bottom:1px solid var(--bege-light);padding-bottom:0.35rem;flex:1}
+.field{margin-bottom:1.3rem}
+.field label{display:block;font-size:0.7rem;letter-spacing:0.13em;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.5rem;font-weight:500}
+.field textarea,.field input{width:100%;background:white;border:1px solid var(--border);padding:0.75rem 1rem;font-family:'Raleway',sans-serif;font-size:0.87rem;color:var(--text-dark);font-weight:300;transition:border-color 0.2s;resize:vertical;outline:none}
+.field textarea:focus,.field input:focus{border-color:var(--verde)}
+.field textarea{min-height:90px}
+.insta-wrap{position:relative}
+.insta-wrap input{padding-left:2.2rem}
+.insta-icon{position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);font-size:0.85rem;color:var(--text-muted);pointer-events:none}
+.insta-hint{font-size:0.68rem;color:var(--text-muted);margin-top:0.4rem;line-height:1.5;font-style:italic}
+.pills{display:flex;flex-wrap:wrap;gap:0.4rem}
+.pill{padding:0.38rem 0.85rem;border:1px solid var(--border);font-size:0.75rem;cursor:pointer;transition:all 0.2s;background:white;color:var(--text-mid);font-family:'Raleway',sans-serif;font-weight:400;user-select:none}
+.pill:hover{border-color:var(--verde);color:var(--verde)}
+.pill.active{border-color:var(--verde);background:var(--verde);color:white}
+.scale{display:flex;gap:3px;flex-wrap:wrap}
+.scale-num{width:33px;height:33px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.8rem;cursor:pointer;transition:all 0.2s;background:white;color:var(--text-mid);font-family:'Raleway',sans-serif;user-select:none}
+.scale-num:hover{border-color:var(--verde);color:var(--verde)}
+.scale-num.active{border-color:var(--verde);background:var(--verde);color:white}
+.scale-labels{display:flex;justify-content:space-between;margin-top:0.35rem;font-size:0.67rem;color:var(--text-muted)}
+.divider{height:1px;background:var(--bege-light);margin:2rem 0}
+.insta-notice{background:white;border:1px solid var(--bege-light);border-left:3px solid var(--bege);padding:1.25rem;margin-bottom:1.3rem}
+.insta-notice p{font-size:0.82rem;color:var(--text-mid);line-height:1.75;font-weight:300}
+.btn-main{width:100%;padding:1.1rem;background:var(--verde);color:white;border:none;font-family:'Raleway',sans-serif;font-size:0.78rem;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;transition:background 0.3s;font-weight:500}
+.btn-main:hover{background:var(--verde-mid)}
+.btn-main:disabled{opacity:0.45;cursor:not-allowed}
+.loading-state{text-align:center;padding:5rem 2rem}
+.loading-spinner{width:36px;height:36px;border:1px solid var(--bege-light);border-top-color:var(--verde);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1.25rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--verde)}
+.loading-sub{font-size:0.73rem;color:var(--text-muted);margin-top:0.35rem;letter-spacing:0.07em}
+.success-box{text-align:center;padding:4rem 2rem;background:white;border:1px solid var(--bege-light);margin:2rem 0}
+.success-icon{font-size:2rem;margin-bottom:1rem;color:var(--bege)}
+.success-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--verde);margin-bottom:0.5rem}
+.success-sub{font-size:0.82rem;color:var(--text-muted);line-height:1.7}
+@media(max-width:600px){.header{padding:2rem 1.5rem 3rem}.body{padding:2rem 1.5rem 0}.scale-num{width:28px;height:28px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="form-section">
+    <div class="header">
+      <svg width="220" height="58" viewBox="0 0 220 58" xmlns="http://www.w3.org/2000/svg">
+        <text x="110" y="34" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-size="28" font-weight="400" fill="#C9B49A" letter-spacing="3">Clínica Ésper</text>
+        <line x1="30" y1="44" x2="190" y2="44" stroke="#C9B49A" stroke-width="0.5" opacity="0.45"/>
+        <text x="110" y="54" text-anchor="middle" font-family="Raleway,sans-serif" font-size="8" font-weight="400" fill="#C9B49A" letter-spacing="6" opacity="0.65">CIRURGIA PLÁSTICA</text>
+      </svg>
+      <div class="header-tag">Pré-atendimento exclusivo</div>
+      <h1>Uma experiência <em>personalizada</em><br>começa aqui</h1>
+      <p>Suas respostas nos ajudam a preparar uma consulta única,<br>acolhedora e especialmente pensada para você</p>
+    </div>
+    <div class="body">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div class="progress-info"><span id="progress-label">Preencha o formulário abaixo</span><span id="progress-pct">0%</span></div>
+      </div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">I</div><div class="section-title">Identificação</div></div>
+        <div class="field"><label>Seu nome completo</label><input type="text" id="nome" placeholder="Como prefere ser chamada(o)..." oninput="updateProgress()"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">II</div><div class="section-title">Sobre você e sua jornada</div></div>
+        <div class="field"><label>Como você se sente hoje, de forma geral?</label><textarea id="q1" placeholder="Compartilhe como está se sentindo neste momento da sua vida..." oninput="updateProgress()"></textarea></div>
+        <div class="field"><label>O que te motivou a buscar esta consulta?</label><textarea id="q2" placeholder="Conte-nos o que te trouxe até aqui..." oninput="updateProgress()"></textarea></div>
+        <div class="field"><label>Há quanto tempo você pensa sobre essa possibilidade?</label>
+          <div class="pills" id="tempo-pills">
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Menos de 1 mês</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">1 a 6 meses</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">6 meses a 1 ano</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Mais de 1 ano</div>
+            <div class="pill" onclick="selectPill(this,'tempo-pills')">Há muitos anos</div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">III</div><div class="section-title">O que você deseja</div></div>
+        <div class="field"><label>Descreva o resultado que você sonha alcançar</label><textarea id="q3" placeholder="Seja o mais detalhada(o) que quiser sobre o que imagina para si..." oninput="updateProgress()"></textarea></div>
+        <div class="field"><label>O que essa mudança significaria para a sua vida?</label><textarea id="q4" placeholder="Pense no impacto emocional, social, profissional..." oninput="updateProgress()"></textarea></div>
+        <div class="field"><label>Como você se imagina após atingir esse resultado?</label><textarea id="q5" placeholder="Como estará se sentindo? O que mudará no seu dia a dia?" oninput="updateProgress()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">IV</div><div class="section-title">Seus sentimentos e preocupações</div></div>
+        <div class="field"><label>Nível de ansiedade sobre esta decisão &nbsp;·&nbsp; 1 = tranquilo · 10 = muito ansioso</label>
+          <div class="scale" id="ansiedade-scale">
+            <div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">1</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">2</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">3</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">4</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">5</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">6</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">7</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">8</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">9</div><div class="scale-num" onclick="selectScale(this,'ansiedade-scale')">10</div>
+          </div>
+          <div class="scale-labels"><span>Muito tranquilo(a)</span><span>Muito ansioso(a)</span></div>
+        </div>
+        <div class="field"><label>O que mais te preocupa ou gera dúvida?</label><textarea id="q6" placeholder="Pode ser sobre o procedimento, recuperação, resultados..." oninput="updateProgress()"></textarea></div>
+        <div class="field"><label>Há algo que gostaria de entender melhor antes da consulta?</label><textarea id="q7" placeholder="Suas dúvidas são muito importantes para nós..." oninput="updateProgress()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">V</div><div class="section-title">Sua decisão e expectativas</div></div>
+        <div class="field"><label>Como você se sente em relação à sua decisão hoje?</label>
+          <div class="pills" id="decisao-pills">
+            <div class="pill" onclick="selectPill(this,'decisao-pills')">Bastante decidida(o)</div><div class="pill" onclick="selectPill(this,'decisao-pills')">Inclinada(o), ainda avaliando</div><div class="pill" onclick="selectPill(this,'decisao-pills')">Em dúvida, pesquisando</div><div class="pill" onclick="selectPill(this,'decisao-pills')">Apenas explorando</div>
+          </div>
+        </div>
+        <div class="field"><label>Você já pesquisou outros profissionais ou clínicas?</label>
+          <div class="pills" id="pesquisa-pills">
+            <div class="pill" onclick="selectPill(this,'pesquisa-pills')">Não, é minha primeira pesquisa</div><div class="pill" onclick="selectPill(this,'pesquisa-pills')">Pesquisei um pouco online</div><div class="pill" onclick="selectPill(this,'pesquisa-pills')">Consultei outras clínicas</div><div class="pill" onclick="selectPill(this,'pesquisa-pills')">Estou comparando opções</div>
+          </div>
+        </div>
+        <div class="field"><label>O que faria você sentir que tomou a decisão certa?</label><textarea id="q8" placeholder="Conte o que é mais importante para você nessa escolha..." oninput="updateProgress()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">VI</div><div class="section-title">Contexto e motivações</div></div>
+        <div class="field"><label>Há alguém próximo que sabe sobre essa decisão?</label>
+          <div class="pills" id="apoio-pills">
+            <div class="pill" onclick="selectPill(this,'apoio-pills')">Sim, tenho total apoio</div><div class="pill" onclick="selectPill(this,'apoio-pills')">Sim, mas há reservas</div><div class="pill" onclick="selectPill(this,'apoio-pills')">Poucas pessoas sabem</div><div class="pill" onclick="selectPill(this,'apoio-pills')">Prefiro manter privado</div>
+          </div>
+        </div>
+        <div class="field"><label>Sua maior motivação é</label>
+          <div class="pills" id="motivacao-pills">
+            <div class="pill" onclick="selectPill(this,'motivacao-pills')">Autoestima pessoal</div><div class="pill" onclick="selectPill(this,'motivacao-pills')">Saúde e bem-estar</div><div class="pill" onclick="selectPill(this,'motivacao-pills')">Reconhecimento social</div><div class="pill" onclick="selectPill(this,'motivacao-pills')">Relacionamentos</div><div class="pill" onclick="selectPill(this,'motivacao-pills')">Vida profissional</div><div class="pill" onclick="selectPill(this,'motivacao-pills')">Nova fase da vida</div>
+          </div>
+        </div>
+        <div class="field"><label>Há algo mais que gostaria que soubéssemos?</label><textarea id="q9" placeholder="Este espaço é livre para compartilhar o que sentir vontade..." oninput="updateProgress()"></textarea></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section">
+        <div class="section-label"><div class="section-num">VII</div><div class="section-title" style="color:var(--bege);border-color:var(--bege-light)">Referências estéticas <em style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem">(opcional)</em></div></div>
+        <div class="insta-notice"><p>Para tornar sua consulta ainda mais personalizada, você pode compartilhar seu Instagram conosco. Assim, nossa equipe conhece melhor seu estilo e referências antes de você chegar — criando uma experiência verdadeiramente única.</p></div>
+        <div class="field"><label>Seu @ do Instagram <span style="font-weight:300;text-transform:none;letter-spacing:0">(totalmente opcional)</span></label>
+          <div class="insta-wrap"><span class="insta-icon">@</span><input type="text" id="instagram" placeholder="seu.perfil" oninput="updateProgress()"></div>
+          <div class="insta-hint">Analisamos apenas perfis públicos · Uso exclusivo para personalizar sua consulta · Nunca compartilhado</div>
+        </div>
+        <div class="field"><label>Referências estéticas que admira</label><textarea id="q10" placeholder="Ex: gosto de resultados naturais, prefiro algo mais discreto..." oninput="updateProgress()" style="min-height:70px"></textarea></div>
+      </div>
+      <button class="btn-main" id="generate-btn" onclick="generateReport()">Enviar e Gerar Relatório</button>
+    </div>
+  </div>
+  <div id="loading-section" style="display:none" class="body">
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <div class="loading-text" id="loading-text">Analisando seu perfil</div>
+      <div class="loading-sub" id="loading-sub">Preparando relatório personalizado...</div>
+    </div>
+  </div>
+  <div id="success-section" style="display:none" class="body">
+    <div class="success-box">
+      <div class="success-icon">◇</div>
+      <div class="success-title">Recebemos suas respostas</div>
+      <div class="success-sub">Seu relatório foi gerado e salvo com sucesso.<br>Nossa equipe já pode acessá-lo e estará preparada<br>para oferecer uma experiência única na sua consulta.<br><br>Aguardamos você com carinho.</div>
+    </div>
+    <button class="btn-main" onclick="location.reload()" style="margin-top:1rem">Novo preenchimento</button>
+  </div>
+</div>
+<script>
+const SUPABASE_URL='https://avmmkztlzekjnmydotas.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2bW1renRsemVram5teWRvdGFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjMyNjMsImV4cCI6MjA5NDkzOTI2M30.o7By7N1OqPfl17n_PnskkEljcRBIVFYoAVEQrNoPQjk';
+const OPENAI_KEY='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';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const pillSelections={};const scaleSelections={};
+function selectPill(el,g){document.querySelectorAll('#'+g+' .pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');pillSelections[g]=el.textContent;updateProgress();}
+function selectScale(el,g){document.querySelectorAll('#'+g+' .scale-num').forEach(s=>s.classList.remove('active'));el.classList.add('active');scaleSelections[g]=el.textContent;updateProgress();}
+function updateProgress(){
+  const fields=['nome','q1','q2','q3','q4','q5','q6','q7','q8','q9'];
+  const pills=['tempo-pills','decisao-pills','pesquisa-pills','apoio-pills','motivacao-pills'];
+  let filled=0,total=fields.length+pills.length+1;
+  fields.forEach(id=>{if(document.getElementById(id)?.value?.trim())filled++;});
+  pills.forEach(id=>{if(pillSelections[id])filled++;});
+  if(scaleSelections['ansiedade-scale'])filled++;
+  const pct=Math.round((filled/total)*100);
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-label').textContent=filled+' de '+total+' campos preenchidos';
+}
+function get(id){return document.getElementById(id)?.value?.trim()||'(não respondido)';}
+function collectAnswers(){
+  return ['Nome: '+get('nome'),'Como se sente hoje: '+get('q1'),'Motivação: '+get('q2'),'Tempo pensando: '+(pillSelections['tempo-pills']||'não informado'),'Resultado desejado: '+get('q3'),'Significado da mudança: '+get('q4'),'Como se imagina após: '+get('q5'),'Ansiedade (1-10): '+(scaleSelections['ansiedade-scale']||'não informado'),'Preocupações: '+get('q6'),'Dúvidas: '+get('q7'),'Decisão: '+(pillSelections['decisao-pills']||'não informado'),'Pesquisa prévia: '+(pillSelections['pesquisa-pills']||'não informado'),'Decisão certa quando: '+get('q8'),'Apoio: '+(pillSelections['apoio-pills']||'não informado'),'Motivação principal: '+(pillSelections['motivacao-pills']||'não informado'),'Informações adicionais: '+get('q9'),'Referências estéticas: '+get('q10')].join('\n');
+}
+function setLoading(t,s){document.getElementById('loading-text').textContent=t;document.getElementById('loading-sub').textContent=s;}
+async function callOpenAI(systemPrompt,userContent){
+  const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},body:JSON.stringify({model:'gpt-4o',max_tokens:1200,response_format:{type:'json_object'},messages:[{role:'system',content:systemPrompt},{role:'user',content:userContent}]})});
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  return JSON.parse(d.choices[0].message.content);
+}
+async function generateReport(){
+  const nome=get('nome');
+  if(!nome||nome==='(não respondido)'){alert('Por favor, informe seu nome para continuar.');return;}
+  document.getElementById('generate-btn').disabled=true;
+  document.getElementById('form-section').style.display='none';
+  document.getElementById('loading-section').style.display='block';
+  const answers=collectAnswers();
+  const instagram=document.getElementById('instagram').value.trim().replace('@','');
+  let instaCtx='(Instagram não fornecido)';
+  if(instagram){
+    setLoading('Analisando referências estéticas','Buscando perfil @'+instagram+' ...');
+    try{
+      const instaData=await callOpenAI('Analista de estética para clínica de cirurgia plástica premium. Analise o perfil público do Instagram indicado com elegância e discrição. Retorne JSON com: estilo_estetico, referencias_visuais, nivel_exposicao, perfil_lifestyle, cruzamento_expectativas, insights_para_consulta','Analise o perfil @'+instagram+' no Instagram para uma clínica de cirurgia plástica. Contexto do paciente:\n'+answers);
+      instaCtx='INSTAGRAM (@'+instagram+'):\n'+JSON.stringify(instaData);
+    }catch(e){instaCtx='(Instagram não pôde ser analisado)';}
+  }
+  setLoading('Elaborando relatório personalizado','Analisando perfil emocional e comportamental...');
+  try{
+    const report=await callOpenAI('Você é um especialista em experiência premium para pacientes de cirurgia plástica, comportamento humano e acolhimento emocional. Analise as respostas e gere um relatório sofisticado, humano e estratégico para a equipe da Clínica Ésper. Nunca indique procedimentos. Nunca faça promessas. Postura ética e empática sempre. Retorne JSON com exatamente estas chaves: perfil_emocional, motivacao_principal, expectativa_estetica, nivel_ansiedade (inicie com Baixo Moderado ou Alto), principais_preocupacoes, risco_frustracao (inicie com Baixo Moderado ou Alto), perfil_decisao, melhor_abordagem, linguagem_ideal, pontos_para_cirurgiao, estrategias_encantamento, probabilidade_fechamento (inicie com Baixa Moderada ou Alta)','Respostas do formulário:\n'+answers+'\n\n'+instaCtx);
+    setLoading('Salvando relatório','Registrando no painel da clínica...');
+    const{error}=await sb.from('relatorios').insert([{nome_paciente:nome,instagram:instagram||null,respostas:answers,relatorio:JSON.stringify(report),probabilidade:report.probabilidade_fechamento||''}]);
+    if(error)throw new Error('Erro ao salvar: '+error.message);
+    document.getElementById('loading-section').style.display='none';
+    document.getElementById('success-section').style.display='block';
+  }catch(err){
+    document.getElementById('loading-section').innerHTML='<div style="text-align:center;padding:3rem"><div style="font-family:Playfair Display,serif;font-size:1.1rem;color:var(--verde);margin-bottom:0.75rem">Não foi possível completar</div><div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem">'+err.message+'</div><button onclick="location.reload()" style="background:var(--verde);color:white;border:none;padding:0.7rem 2rem;font-family:Raleway,sans-serif;font-size:0.77rem;letter-spacing:0.12em;cursor:pointer">Tentar novamente</button></div>';
+  }
+}
+</script>
+</body>
+</html>

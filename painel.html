@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel · Clínica Ésper</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#2D4A3E;--verde-mid:#3D6055;--bege:#C9B49A;--bege-light:#E8DDD0;--bege-xlight:#F5F0EB;--bege-xxlight:#FAF8F5;--text-dark:#1C2B25;--text-mid:#3D4F47;--text-muted:#7A8C84;--border:#DDD5C8;}
+body{font-family:'Raleway',sans-serif;background:var(--bege-xxlight);color:var(--text-dark);font-weight:300;min-height:100vh}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.login-box{background:white;border:1px solid var(--border);padding:3rem;width:100%;max-width:400px;text-align:center}
+.login-box h2{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;color:var(--verde);margin-bottom:0.35rem;margin-top:1.5rem}
+.login-box p{font-size:0.75rem;color:var(--text-muted);margin-bottom:2rem;letter-spacing:0.05em}
+.login-field{margin-bottom:1rem;text-align:left}
+.login-field label{display:block;font-size:0.7rem;letter-spacing:0.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.4rem;font-weight:500}
+.login-field input{width:100%;background:var(--bege-xxlight);border:1px solid var(--border);padding:0.75rem 1rem;font-family:'Raleway',sans-serif;font-size:0.87rem;color:var(--text-dark);outline:none;transition:border-color 0.2s}
+.login-field input:focus{border-color:var(--verde)}
+.btn-login{width:100%;padding:0.9rem;background:var(--verde);color:white;border:none;font-family:'Raleway',sans-serif;font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;font-weight:500}
+.btn-login:hover{background:var(--verde-mid)}
+.login-error{font-size:0.75rem;color:#A32D2D;margin-top:0.75rem;display:none}
+.painel{display:none}
+.topbar{background:var(--verde);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--bege);letter-spacing:0.1em}
+.topbar-right{display:flex;align-items:center;gap:1.5rem}
+.topbar-user{font-size:0.75rem;color:rgba(255,255,255,0.6);letter-spacing:0.06em}
+.btn-logout{font-size:0.72rem;letter-spacing:0.12em;color:var(--bege);background:none;border:1px solid rgba(201,180,154,0.3);padding:0.35rem 0.85rem;cursor:pointer;font-family:'Raleway',sans-serif;text-transform:uppercase}
+.btn-logout:hover{border-color:var(--bege)}
+.painel-body{max-width:1100px;margin:0 auto;padding:2.5rem 2rem}
+.painel-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2rem}
+.painel-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:400;color:var(--verde)}
+.painel-count{font-size:0.75rem;color:var(--text-muted);letter-spacing:0.08em}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:white;border:1px solid var(--border);padding:1.25rem;border-top:3px solid var(--bege)}
+.stat-label{font-size:0.67rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.4rem;font-weight:500}
+.stat-value{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;color:var(--verde)}
+.stat-sub{font-size:0.72rem;color:var(--text-muted);margin-top:0.2rem}
+.filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.filter-input{padding:0.5rem 0.85rem;border:1px solid var(--border);background:white;font-family:'Raleway',sans-serif;font-size:0.82rem;color:var(--text-dark);outline:none;flex:1;min-width:180px}
+.filter-input:focus{border-color:var(--verde)}
+.filter-select{padding:0.5rem 0.85rem;border:1px solid var(--border);background:white;font-family:'Raleway',sans-serif;font-size:0.82rem;color:var(--text-dark);outline:none;cursor:pointer}
+.table-wrap{background:white;border:1px solid var(--border);overflow:hidden}
+.table-head{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 80px;background:var(--verde);padding:0.75rem 1.25rem;gap:1rem}
+.table-head span{font-size:0.67rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--bege);font-weight:500}
+.table-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 80px;padding:1rem 1.25rem;gap:1rem;border-bottom:1px solid var(--bege-light);cursor:pointer;transition:background 0.15s;align-items:center}
+.table-row:last-child{border-bottom:none}
+.table-row:hover{background:var(--bege-xxlight)}
+.row-nome{font-size:0.88rem;font-weight:400;color:var(--text-dark)}
+.row-insta{font-size:0.78rem;color:var(--text-muted)}
+.row-data{font-size:0.78rem;color:var(--text-muted)}
+.row-prob{font-size:0.75rem;font-weight:500;padding:0.2rem 0.65rem;text-align:center;display:inline-block}
+.prob-alta{background:#EAF3DE;color:#27500A}
+.prob-moderada{background:#FAEEDA;color:#633806}
+.prob-baixa{background:#FCEBEB;color:#791F1F}
+.row-btn{font-size:0.7rem;letter-spacing:0.1em;color:var(--verde);background:none;border:1px solid var(--bege);padding:0.3rem 0.65rem;cursor:pointer;font-family:'Raleway',sans-serif;text-transform:uppercase}
+.row-btn:hover{border-color:var(--verde);background:var(--bege-xlight)}
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted)}
+.empty-icon{font-size:2rem;margin-bottom:1rem;opacity:0.3}
+.empty-text{font-family:'Playfair Display',serif;font-size:1.1rem}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(28,43,37,0.6);z-index:100;display:none;overflow-y:auto;padding:2rem}
+.modal-overlay.open{display:block}
+.modal{background:var(--bege-xxlight);max-width:780px;margin:0 auto}
+.modal-header{background:var(--verde);padding:2rem;display:flex;justify-content:space-between;align-items:flex-start}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:white;font-weight:400}
+.modal-meta{font-size:0.72rem;color:var(--bege-light);margin-top:0.25rem;letter-spacing:0.06em}
+.modal-close{background:none;border:1px solid rgba(201,180,154,0.4);color:var(--bege);font-size:1.1rem;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.modal-close:hover{border-color:var(--bege)}
+.modal-body{padding:2rem}
+.report-card{background:white;border:1px solid var(--border);padding:1.25rem;margin-bottom:0.6rem;border-left:3px solid var(--bege)}
+.report-card.hl{border-left-color:var(--verde)}
+.report-card-title{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--verde);margin-bottom:0.5rem;font-weight:600}
+.report-card-content{font-size:0.87rem;color:var(--text-dark);line-height:1.8;font-weight:300}
+.badge{display:inline-block;padding:0.18rem 0.6rem;font-size:0.67rem;letter-spacing:0.07em;font-weight:500;text-transform:uppercase;margin-right:0.35rem}
+.badge-low{background:#EAF3DE;color:#27500A}
+.badge-mid{background:#FAEEDA;color:#633806}
+.badge-high{background:#FCEBEB;color:#791F1F}
+.prob-bar-wrap{margin-top:0.5rem;height:3px;background:var(--bege-light)}
+.prob-bar-fill{height:100%}
+.spinner{width:32px;height:32px;border:1px solid var(--bege-light);border-top-color:var(--verde);border-radius:50%;animation:spin 1s linear infinite;margin:3rem auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.table-head,.table-row{grid-template-columns:1fr 1fr 60px}.table-head span:nth-child(2),.row-insta,.table-head span:nth-child(3),.row-data{display:none}.painel-body{padding:1.5rem 1rem}}
+</style>
+</head>
+<body>
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <svg width="180" height="48" viewBox="0 0 180 48" xmlns="http://www.w3.org/2000/svg">
+      <text x="90" y="28" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-size="22" font-weight="400" fill="#2D4A3E" letter-spacing="2">Clínica Ésper</text>
+      <line x1="20" y1="37" x2="160" y2="37" stroke="#C9B49A" stroke-width="0.5" opacity="0.6"/>
+      <text x="90" y="46" text-anchor="middle" font-family="Raleway,sans-serif" font-size="7" fill="#C9B49A" letter-spacing="5" opacity="0.7">PAINEL INTERNO</text>
+    </svg>
+    <h2>Acesso restrito</h2>
+    <p>Área exclusiva da equipe Clínica Ésper</p>
+    <div class="login-field"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="login-field"><label>Senha</label><input type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error">E-mail ou senha incorretos. Tente novamente.</div>
+  </div>
+</div>
+<div class="painel" id="painel">
+  <div class="topbar">
+    <div class="topbar-logo">Clínica Ésper · Painel</div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="topbar-user"></span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+  <div class="painel-body">
+    <div class="painel-header">
+      <div class="painel-title">Relatórios de Pré-atendimento</div>
+      <div class="painel-count" id="painel-count"></div>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="filters">
+      <input class="filter-input" type="text" id="search-input" placeholder="Buscar por nome ou Instagram..." oninput="renderTable()">
+      <select class="filter-select" id="prob-filter" onchange="renderTable()">
+        <option value="">Todas as probabilidades</option>
+        <option value="alta">Alta</option>
+        <option value="moderada">Moderada</option>
+        <option value="baixa">Baixa</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <div class="table-head"><span>Paciente</span><span>Instagram</span><span>Data</span><span>Prob. Fechamento</span><span></span></div>
+      <div id="table-body"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+<script>
+const SUPABASE_URL='https://avmmkztlzekjnmydotas.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF2bW1renRsemVram5teWRvdGFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjMyNjMsImV4cCI6MjA5NDkzOTI2M30.o7By7N1OqPfl17n_PnskkEljcRBIVFYoAVEQrNoPQjk';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let allData=[];
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const senha=document.getElementById('login-senha').value;
+  const{data,error}=await sb.auth.signInWithPassword({email,password:senha});
+  if(error){document.getElementById('login-error').style.display='block';return;}
+  document.getElementById('login-error').style.display='none';
+  document.getElementById('topbar-user').textContent=data.user.email;
+  document.getElementById('login-wrap').style.display='none';
+  document.getElementById('painel').style.display='block';
+  loadData();
+}
+async function doLogout(){await sb.auth.signOut();location.reload();}
+async function loadData(){
+  document.getElementById('table-body').innerHTML='<div class="spinner"></div>';
+  const{data,error}=await sb.from('relatorios').select('*').order('created_at',{ascending:false});
+  if(error){document.getElementById('table-body').innerHTML='<div class="empty-state"><div class="empty-icon">◇</div><div class="empty-text">Erro ao carregar dados</div></div>';return;}
+  allData=data||[];
+  renderStats();renderTable();
+}
+function renderStats(){
+  const total=allData.length;
+  const alta=allData.filter(r=>(r.probabilidade||'').toLowerCase().startsWith('alta')).length;
+  const mod=allData.filter(r=>(r.probabilidade||'').toLowerCase().startsWith('moderada')).length;
+  const baixa=allData.filter(r=>(r.probabilidade||'').toLowerCase().startsWith('baixa')).length;
+  document.getElementById('stats-grid').innerHTML=
+    sc('Total de relatórios',total,'pacientes cadastrados')+
+    sc('Alta probabilidade',alta,'de fechamento')+
+    sc('Prob. moderada',mod,'em avaliação')+
+    sc('Baixa probabilidade',baixa,'necessita atenção');
+  document.getElementById('painel-count').textContent=total+' relatório'+(total!==1?'s':'');
+}
+function sc(l,v,s){return'<div class="stat-card"><div class="stat-label">'+l+'</div><div class="stat-value">'+v+'</div><div class="stat-sub">'+s+'</div></div>';}
+function renderTable(){
+  const search=document.getElementById('search-input').value.toLowerCase();
+  const probF=document.getElementById('prob-filter').value.toLowerCase();
+  const filtered=allData.filter(r=>{
+    const ms=!search||(r.nome_paciente||'').toLowerCase().includes(search)||(r.instagram||'').toLowerCase().includes(search);
+    const mp=!probF||((r.probabilidade||'').toLowerCase().startsWith(probF));
+    return ms&&mp;
+  });
+  window._fd=filtered;
+  if(!filtered.length){document.getElementById('table-body').innerHTML='<div class="empty-state"><div class="empty-icon">◇</div><div class="empty-text">Nenhum relatório encontrado</div></div>';return;}
+  document.getElementById('table-body').innerHTML=filtered.map((r,i)=>{
+    const dt=new Date(r.created_at).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const p=(r.probabilidade||'').toLowerCase();
+    const pc=p.startsWith('alta')?'prob-alta':p.startsWith('baixa')?'prob-baixa':'prob-moderada';
+    const pl=p.startsWith('alta')?'Alta':p.startsWith('baixa')?'Baixa':'Moderada';
+    return'<div class="table-row" onclick="openModal('+i+')"><div class="row-nome">'+(r.nome_paciente||'—')+'</div><div class="row-insta">'+(r.instagram?'@'+r.instagram:'—')+'</div><div class="row-data">'+dt+'</div><div><span class="row-prob '+pc+'">'+pl+'</span></div><button class="row-btn">Ver</button></div>';
+  }).join('');
+}
+function openModal(idx){
+  const r=window._fd[idx];if(!r)return;
+  let report={};try{report=JSON.parse(r.relatorio||'{}');}catch(e){}
+  const dt=new Date(r.created_at).toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'});
+  const fields=[['perfil_emocional','Perfil emocional','hl'],['motivacao_principal','Motivação principal',''],['expectativa_estetica','Expectativa estética',''],['nivel_ansiedade','Nível de ansiedade',''],['principais_preocupacoes','Principais preocupações',''],['risco_frustracao','Risco de frustração',''],['perfil_decisao','Perfil de decisão',''],['melhor_abordagem','Melhor abordagem para a consulta','hl'],['linguagem_ideal','Linguagem ideal para o atendimento',''],['pontos_para_cirurgiao','Pontos importantes para o cirurgião','hl'],['estrategias_encantamento','Estratégias de encantamento',''],['probabilidade_fechamento','Probabilidade emocional de fechamento','hl']];
+  let cards=fields.map(([key,label,cls])=>{
+    const val=report[key]||'';const t=val.toLowerCase();
+    let extra='';
+    if(key==='nivel_ansiedade'||key==='risco_frustracao'){if(t.startsWith('alto')||t.startsWith('alta'))extra='<span class="badge badge-high">Alto</span> ';else if(t.startsWith('moderado')||t.startsWith('moderada'))extra='<span class="badge badge-mid">Moderado</span> ';else if(t.startsWith('baixo')||t.startsWith('baixa'))extra='<span class="badge badge-low">Baixo</span> ';}
+    if(key==='probabilidade_fechamento'){let w='50%',c='var(--bege)';if(t.startsWith('alta'))w='82%',c='var(--verde)';else if(t.startsWith('baixa'))w='22%',c='#A32D2D';extra='<div class="prob-bar-wrap"><div class="prob-bar-fill" style="width:'+w+';background:'+c+'"></div></div>';}
+    return'<div class="report-card '+cls+'"><div class="report-card-title">'+label+'</div><div class="report-card-content">'+extra+val+'</div></div>';
+  }).join('');
+  document.getElementById('modal-content').innerHTML='<div class="modal-header"><div><div class="modal-title">'+(r.nome_paciente||'Paciente')+'</div><div class="modal-meta">'+dt.toUpperCase()+(r.instagram?' · @'+r.instagram:'')+'</div></div><button class="modal-close" onclick="document.getElementById(\'modal-overlay\').classList.remove(\'open\')">✕</button></div><div class="modal-body">'+cards+'</div>';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('open');}
+sb.auth.getSession().then(({data})=>{
+  if(data.session){document.getElementById('topbar-user').textContent=data.session.user.email;document.getElementById('login-wrap').style.display='none';document.getElementById('painel').style.display='block';loadData();}
+});
+</script>
+</body>
+</html>
